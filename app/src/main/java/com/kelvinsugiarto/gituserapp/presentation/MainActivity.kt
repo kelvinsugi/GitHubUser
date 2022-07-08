@@ -1,20 +1,20 @@
 package com.kelvinsugiarto.gituserapp.presentation
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.kelvinsugiarto.gituserapp.data.model.UsersListModel
 import com.kelvinsugiarto.gituserapp.databinding.ActivityMainBinding
+import com.kelvinsugiarto.gituserapp.presentation.user_detail.DetailActivity
 import com.kelvinsugiarto.gituserapp.presentation.user_list.UserListViewModel
 import com.kelvinsugiarto.gituserapp.presentation.user_list.adapter.UserListAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,6 +52,11 @@ class MainActivity : AppCompatActivity() {
         binding.apply {
             rvUsersList.run {
                 userListAdapter = UserListAdapter {
+                    val changePage = Intent(mContext, DetailActivity::class.java)
+                    if (it != null) {
+                        changePage.putExtra("username",it.login)
+                    }
+                    startActivity(changePage)
 
                 }
                 layoutManager = LinearLayoutManager(context)
