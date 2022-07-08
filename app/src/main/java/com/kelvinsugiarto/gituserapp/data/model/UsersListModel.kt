@@ -13,5 +13,9 @@ data class UsersListModel(
     val node_id:String,
 
     @SerializedName("avatar_url")
-    val avatar_url:String?
+    val avatar_url:String?,
+
+    @SerializedName("url")
+    val url:String?
+
 )
