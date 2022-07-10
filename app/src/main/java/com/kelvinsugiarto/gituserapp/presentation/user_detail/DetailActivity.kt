@@ -11,6 +11,9 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.kelvinsugiarto.gituserapp.R
 import com.kelvinsugiarto.gituserapp.data.model.UserModel
 import com.kelvinsugiarto.gituserapp.databinding.ActivityDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -78,6 +81,8 @@ class DetailActivity : AppCompatActivity() {
 
     private fun onLoaded(itemDetail: UserModel){
         binding.apply {
+            cvLayoutDetail.visibility = View.VISIBLE
+
             tvUsername.text = itemDetail.name
             if(itemDetail.email != null){
                 tvUserEmail.visibility = View.VISIBLE
@@ -86,6 +91,13 @@ class DetailActivity : AppCompatActivity() {
                 tvUserEmail.visibility = View.GONE
             }
             tvUserLocation.text = itemDetail.location ?: ""
+
+            val options = RequestOptions()
+
+            Glide.with(mContext).load(itemDetail.avatar_url)
+                .placeholder(R.drawable.ic_avatar_1577909)
+                .apply(options.circleCrop())
+                .into(ivUserProfileImage)
         }
 
         showLoading(false)

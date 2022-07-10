@@ -9,8 +9,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.kelvinsugiarto.gituserapp.R
 import com.kelvinsugiarto.gituserapp.data.model.UsersListModel
+
 
 class UserListAdapter(private val onClick: (UsersListModel?) -> Unit)
     : ListAdapter<UsersListModel, UserListAdapter.ItemViewholder>(DiffCallback()) {
@@ -25,7 +27,12 @@ class UserListAdapter(private val onClick: (UsersListModel?) -> Unit)
             tvUserName.text = item.login
             tvUserUrl.text = item.url
 
-            Glide.with(itemView).load(item.avatar_url).into(ivUserImageProfile)
+            val options = RequestOptions()
+
+            Glide.with(itemView).load(item.avatar_url)
+                .placeholder(R.drawable.ic_avatar_1577909)
+                .apply(options.circleCrop())
+                .into(ivUserImageProfile)
 
             setOnClickListener {
                 onClick(item)
