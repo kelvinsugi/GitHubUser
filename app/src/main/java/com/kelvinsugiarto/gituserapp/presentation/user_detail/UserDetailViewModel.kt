@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserDetailViewModel @Inject constructor(
-    private val githubUserUseCaseImpl: GithubUserUseCaseImpl
+//    private val githubUserUseCaseImpl: GithubUserUseCaseImpl
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UserDetailUIState>(UserDetailUIState.Empty)
@@ -33,9 +33,9 @@ class UserDetailViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val result = githubUserUseCaseImpl.getUser(username)
+//                val result = githubUserUseCaseImpl.getUser(username)
 
-                _uiState.value = UserDetailUIState.Loaded(result)
+//                _uiState.value = UserDetailUIState.Loaded(result)
             } catch (error: Exception) {
                 _uiState.value = UserDetailUIState.Error(ExceptionParser.getMessage(error))
             }
