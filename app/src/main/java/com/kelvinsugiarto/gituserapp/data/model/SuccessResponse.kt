@@ -1,8 +1,11 @@
 package com.kelvinsugiarto.gituserapp.data.model
 
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 class SuccessResponse : Serializable {
-    var access_token: String = ""
-    var expired_date: String = ""
+    @SerializedName("access_token")
+    var access_token: String? = null
+    @SerializedName("expired_date")
+    var expired_date: String? = null
 }

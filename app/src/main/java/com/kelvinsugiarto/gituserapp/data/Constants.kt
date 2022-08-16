@@ -1,0 +1,7 @@
+package com.kelvinsugiarto.gituserapp.data
+
+object Constants {
+    const val SHARED_PREF_LOGIN_DATA = "SHARED_PREF_LOGIN_DATA"
+    const val SHARED_PREF_KEY_LOGIN_EXPIRED_STRING = "SHARED_PREF_LOGIN_EXPIRED_STRING"
+    const val SHARED_PREF_KEY_LOGIN_TOKEN_STRING = "SHARED_PREF_LOGIN_TOKEN_STRING"
+}

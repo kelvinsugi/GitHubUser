@@ -1,8 +1,7 @@
 package com.kelvinsugiarto.gituserapp.data.network
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.GsonBuilder
-import com.google.gson.JsonParser
 import com.kelvinsugiarto.gituserapp.MockReturnValueTest
 import com.kelvinsugiarto.gituserapp.MockReturnValueTest.ALL_CURRENCIES_LIST
 import com.kelvinsugiarto.gituserapp.data.api.OpenExchangeRatesAPI

@@ -1,8 +1,15 @@
 <resources>
-    <string name="app_name">Currency Converter App</string>
+    <string name="app_name">Test App</string>
 
     <string name="title_home">Home</string>
 
     <string name="error_not_found">Error: Not Found</string>
     <string name="error_something_went_wrong">Something went wrong</string>
+    <string name="action_sign_in">Login</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in_short">Done</string>
+    <string name="prompt_email">Email</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

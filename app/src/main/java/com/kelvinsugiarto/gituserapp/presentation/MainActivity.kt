@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.EditorInfo
@@ -17,9 +19,15 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.kelvinsugiarto.gituserapp.R
+import com.kelvinsugiarto.gituserapp.data.Constants
+import com.kelvinsugiarto.gituserapp.data.SharedPreferenceHelper
+import com.kelvinsugiarto.gituserapp.data.SharedPreferenceHelper.get
+import com.kelvinsugiarto.gituserapp.data.SharedPreferenceHelper.set
 import com.kelvinsugiarto.gituserapp.data.model.*
 import com.kelvinsugiarto.gituserapp.databinding.ActivityMainBinding
+import com.kelvinsugiarto.gituserapp.presentation.auth.AuthActivity
 import com.kelvinsugiarto.gituserapp.presentation.auth.AuthViewModel
 import com.kelvinsugiarto.gituserapp.presentation.user_detail.DetailActivity
 import com.kelvinsugiarto.gituserapp.presentation.user_list.UserListViewModel
@@ -40,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var mContext : Context
 
-//    private val userListViewModel: UserListViewModel by viewModels()
+    private val userListViewModel: UserListViewModel by viewModels()
     private val authViewModel: AuthViewModel by viewModels()
 
     var arrayListCurrencyModel = ArrayList<CurrencyModel>()
@@ -69,16 +77,31 @@ class MainActivity : AppCompatActivity() {
         initObserver()
         initListener()
 
-//        fetchCurrencyList()
-        login()
+        fetchUserList()
     }
 
-    private fun login(){
-        authViewModel.login()
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.home_menu, menu)
+        return true
     }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.sign_out -> {
+                val dataLogin = SharedPreferenceHelper.customPrefs(this,Constants.SHARED_PREF_LOGIN_DATA)
+                val token = dataLogin[Constants.SHARED_PREF_KEY_LOGIN_TOKEN_STRING, ""]
+                authViewModel.logout(token)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
+
 
     private fun fetchUserList() {
-//        userListViewModel.getUserLists()
+        userListViewModel.getUserLists()
     }
 
     private fun fetchCurrencyList(){
@@ -204,40 +227,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun initObserver(){
-        lifecycleScope.launch {
-            authViewModel.uiAuthState.observe(this@MainActivity){
-                state ->
-                when(state){
-                    is AuthViewModel.AuthUIState.Loaded -> {
-                        state.dataResult.handleResult(
-                            unathorizedDataBlock = {
-                            },
-                            successDataBlock = {
-                                showLoading(false) },
-                            failureBlock = {
-                                Log.w("failed",it.exception)
-                                showLoading(false) }
-                        )
-//                        state.dataResult.handleResult({
-//                            when(it){
-//                                is DataResult.Success<*> -> {
-//                                    val data = it.data as SuccessResponse
-//                                    Toast.makeText(mContext,data.expired_date,Toast.LENGTH_SHORT).show()
-//                                }
-//                                is DataResult.Unauthorized<*> -> {
-//                                    val data = it.data as UnauthorizedResponse
-//                                    Toast.makeText(mContext,data.message,Toast.LENGTH_SHORT).show()
-//                                }
-//                                is DataResult.Error -> {
-//                                    Toast.makeText(mContext,it.exception,Toast.LENGTH_SHORT).show()
-//                                }
-//                            }
-//                        })
-                    }
-                    else -> {showLoading(true)}
-                }
-            }
+
+        authViewModel.loginLiveData.observe(this){
+            state -> handleLoginResult(state)
         }
+
 
         lifecycleScope.launch {
 //            repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -335,5 +329,35 @@ class MainActivity : AppCompatActivity() {
 
     private fun showError(@StringRes stringRes: Int) {
         Toast.makeText(mContext, stringRes, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun logOut(){
+        val intent = Intent(mContext, AuthActivity::class.java)
+        val pref =  SharedPreferenceHelper.customPrefs(mContext,Constants.SHARED_PREF_LOGIN_DATA)
+        pref.set(Constants.SHARED_PREF_KEY_LOGIN_TOKEN_STRING, "")
+        pref.set(Constants.SHARED_PREF_KEY_LOGIN_EXPIRED_STRING, "0")
+        this.finish()
+        startActivity(intent)
+    }
+
+    private fun handleLoginResult(status: DataResult<Any>) {
+        when (status) {
+            is DataResult.Loading -> showLoading(true)
+            is DataResult.Success -> logOut()
+            is DataResult.Unauthorized -> {
+                showLoading(false)
+                Snackbar.make(binding.root,"Not authorized",
+                    Snackbar.LENGTH_SHORT).setAction("Dismiss"){
+
+                }.show()
+            }
+            is DataResult.Error -> {
+                showLoading(false)
+                status.let {  Snackbar.make(binding.root,it.toString(),
+                    Snackbar.LENGTH_SHORT).setAction("Dismiss"){
+                }.show() }
+            }
+            else -> {showLoading(false)}
+        }
     }
 }

@@ -1,22 +1,16 @@
 package com.kelvinsugiarto.gituserapp.presentation.user_list
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.asLiveData
-import com.kelvinsugiarto.gituserapp.MockReturnValueTest
 import com.kelvinsugiarto.gituserapp.data.model.CurrencyModel
 import com.kelvinsugiarto.gituserapp.domain.OpenExchangeRatesCaseImpl
 import com.kelvinsugiarto.gituserapp.domain.usecase.OpenExchangeRatesUseCase
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import io.reactivex.Observable
-import io.reactivex.Single
+
 import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.rules.TestRule
