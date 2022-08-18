@@ -8,11 +8,9 @@ import retrofit2.http.*
 
 interface AkseleranLoginApi {
     @FormUrlEncoded
-    @Headers("Accept:application/json","API-KEY: tkhg564aD45sd4d46wdw99565SdFsdwdwdwQQoP11454You")
     @POST("/api/oauth/token")
     suspend fun login(@Field("email") email:String, @Field("password") password: String):Response<SuccessResponse>
 
-    @Headers("Accept:application/json","API-KEY: tkhg564aD45sd4d46wdw99565SdFsdwdwdwQQoP11454You")
     @POST("/api/oauth/logout")
     suspend fun logout(@Header("Authorization") authKey:String):Response<Unit>
 }

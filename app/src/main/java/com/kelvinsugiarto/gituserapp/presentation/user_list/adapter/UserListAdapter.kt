@@ -15,7 +15,14 @@ import com.kelvinsugiarto.gituserapp.data.model.UsersListModel
 
 
 class UserListAdapter(private val onClick: (UsersListModel?) -> Unit)
-    : ListAdapter<UsersListModel, UserListAdapter.ItemViewholder>(DiffCallback()) {
+    : ListAdapter<UsersListModel, RecyclerView.ViewHolder>(DiffCallback()) {
+
+    private var mDataSet: List<UsersListModel> = arrayListOf()
+
+
+    val TOP_TYPE = 0
+     val BOTTOM_TYPE = 2
+     val ITEM_TYPE = 1
 
 
     class ItemViewholder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -26,11 +33,10 @@ class UserListAdapter(private val onClick: (UsersListModel?) -> Unit)
         fun bind(item: UsersListModel,onClick: (UsersListModel?) -> Unit) = with(itemView) {
             tvUserName.text = item.login
             tvUserUrl.text = item.url
-
             val options = RequestOptions()
 
             Glide.with(itemView).load(item.avatar_url)
-                .placeholder(R.drawable.ic_avatar_1577909)
+                .placeholder(R.drawable.rounded_placeholder)
                 .apply(options.circleCrop())
                 .into(ivUserImageProfile)
 
@@ -40,11 +46,28 @@ class UserListAdapter(private val onClick: (UsersListModel?) -> Unit)
         }
     }
 
+
+    override fun getItemCount(): Int {
+        return mDataSet.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        if (position == 0){
+            return TOP_TYPE
+        } else if (position == itemCount) {
+            return BOTTOM_TYPE
+        } else return ITEM_TYPE
+//        return super.getItemViewType(position)
+    }
+
     override fun submitList(list: List<UsersListModel>?) {
+        if (list != null) {
+            mDataSet = list
+        }
         super.submitList(list)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewholder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ItemViewholder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.user_list_item, parent, false)
@@ -63,5 +86,9 @@ class UserListAdapter(private val onClick: (UsersListModel?) -> Unit)
         override fun areContentsTheSame(oldItem: UsersListModel, newItem: UsersListModel): Boolean {
             return oldItem == newItem
         }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        TODO("Not yet implemented")
     }
 }

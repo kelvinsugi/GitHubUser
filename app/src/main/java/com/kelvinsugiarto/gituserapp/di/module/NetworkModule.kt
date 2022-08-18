@@ -1,6 +1,7 @@
 package com.kelvinsugiarto.gituserapp.di.module
 
 import com.kelvinsugiarto.gituserapp.BuildConfig
+import com.kelvinsugiarto.gituserapp.data.network.ApiHeaderInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,15 +21,18 @@ object NetworkModule {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY
 
+        val apiKey = ApiHeaderInterceptor()
+
         return OkHttpClient.Builder()
             .addInterceptor(logging)
+            .addInterceptor(apiKey)
             .build()
     }
 
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL_AKSELERAN)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

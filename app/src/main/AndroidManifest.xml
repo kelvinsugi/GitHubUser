@@ -22,10 +22,6 @@
             android:exported="true"
             android:label="TestApp"
             android:theme="@style/Theme.GitUserApp.Fullscreen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".presentation.auth.AuthActivity"
@@ -37,9 +33,14 @@
             android:exported="false" />
         <activity
             android:name=".presentation.MainActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

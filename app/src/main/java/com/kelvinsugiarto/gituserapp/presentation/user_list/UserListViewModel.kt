@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.kelvinsugiarto.gituserapp.data.model.CurrencyModel
 import com.kelvinsugiarto.gituserapp.data.model.CurrencyRateModel
 import com.kelvinsugiarto.gituserapp.data.model.UsersListModel
+import com.kelvinsugiarto.gituserapp.domain.GithubUserUseCaseImpl
 import com.kelvinsugiarto.gituserapp.domain.OpenExchangeRatesCaseImpl
 import com.kelvinsugiarto.gituserapp.util.ExceptionParser
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,8 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserListViewModel @Inject constructor(
-//    private val githubUserUseCaseImpl: GithubUserUseCaseImpl,
-    private val openExchangeRatesCaseImpl: OpenExchangeRatesCaseImpl
+    private val githubUserUseCaseImpl: GithubUserUseCaseImpl,
     ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UserListUIState>(UserListUIState.Empty)
@@ -42,86 +42,101 @@ class UserListViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-//                val result = githubUserUseCaseImpl.getListUsers()
-//1 usd = 10000 rupiah
-//                _uiState.value = UserListUIState.Loaded(result)
+                val result = githubUserUseCaseImpl.getListUsers()
+                _uiState.value = UserListUIState.Loaded(result)
             } catch (error: Exception) {
                 _uiState.value = UserListUIState.Error(ExceptionParser.getMessage(error))
             }
         }
     }
 
-    fun getCurrencyList(){
-        _uiCurrencyState.value = CurrencyListUIState.Loading
-
+    fun getSearchUserList(query: String){
+        _uiState.value = UserListUIState.Loading
         viewModelScope.launch(Dispatchers.Default) {
             try {
-                var result = openExchangeRatesCaseImpl.getListCurrency()
-                arrayListCurrencyModel.addAll(result)
-
-                val listString = ArrayList<String>()
-                    for(i in result){
-                    listString.add(i.currencyName)
-                }
-
-
-                viewModelScope.launch(Dispatchers.Main){
-                    _uiCurrencyState.postValue(CurrencyListUIState.Loaded(listString,result))
-                    _uiCurrencyState.value = CurrencyListUIState.Loaded(listString,result)
-                }
-              } catch (error: Exception) {
+                val result = githubUserUseCaseImpl.searchUser(query)
                 viewModelScope.launch(Dispatchers.Main) {
-                    _uiCurrencyState.postValue(CurrencyListUIState.Error(ExceptionParser.getMessage(error)))
-                    _uiCurrencyState.value =
-                        CurrencyListUIState.Error(ExceptionParser.getMessage(error))
-                }
-              }
-        }
-    }
-
-    fun getLatestCurrency(base:String){
-        _uiCurrencyListState.value = CurrencyResultListUIState.Loading
-        viewModelScope.launch(Dispatchers.Default) {
-            try {
-                val result = openExchangeRatesCaseImpl.getLatestCurrency("USD")
-//                val listString = ArrayList<String>()
-//                for(i in result.rates){
-//                    listString.add(i.currencyName)
-//                }
-
-                for(i in result.rates.entries){
-                   val currencyName = arrayListCurrencyModel.filter { it.currencyCode == i.key }
-                    arrayListCurrencyRateModel.add(CurrencyRateModel(currencyName[0].currencyName,i.key,i.value,0.00))
-                }
-
-//
-                viewModelScope.launch(Dispatchers.Main){
-                    _uiCurrencyListState.value = CurrencyResultListUIState.Loaded(arrayListCurrencyRateModel)
+                    _uiState.value = UserListUIState.Loaded(result.items)
                 }
             } catch (error: Exception) {
                 viewModelScope.launch(Dispatchers.Main) {
-                    _uiCurrencyListState.value =
-                        CurrencyResultListUIState.Error(ExceptionParser.getMessage(error))
+                    _uiState.value = UserListUIState.Error(ExceptionParser.getMessage(error))
                 }
             }
         }
     }
 
-    fun calculate(strNumber:Double){
-        _uiCurrencyListState.value = CurrencyResultListUIState.Loading
-        viewModelScope.launch(Dispatchers.Default) {
-            for (i in arrayListCurrencyRateModel) {
-                i.currencyResult = i.currencyRate * strNumber
-            }
-            viewModelScope.launch(Dispatchers.Main){
-                _uiCurrencyListState.value = CurrencyResultListUIState.Loaded(arrayListCurrencyRateModel)
-            }
-        }
-    }
-
-    fun calculateResult(baseRate:Double, amount:Double):Double{
-        return baseRate * amount
-    }
+//    fun getCurrencyList(){
+//        _uiCurrencyState.value = CurrencyListUIState.Loading
+//
+//        viewModelScope.launch(Dispatchers.Default) {
+//            try {
+//                var result = openExchangeRatesCaseImpl.getListCurrency()
+//                arrayListCurrencyModel.addAll(result)
+//
+//                val listString = ArrayList<String>()
+//                    for(i in result){
+//                    listString.add(i.currencyName)
+//                }
+//
+//
+//                viewModelScope.launch(Dispatchers.Main){
+//                    _uiCurrencyState.postValue(CurrencyListUIState.Loaded(listString,result))
+//                    _uiCurrencyState.value = CurrencyListUIState.Loaded(listString,result)
+//                }
+//              } catch (error: Exception) {
+//                viewModelScope.launch(Dispatchers.Main) {
+//                    _uiCurrencyState.postValue(CurrencyListUIState.Error(ExceptionParser.getMessage(error)))
+//                    _uiCurrencyState.value =
+//                        CurrencyListUIState.Error(ExceptionParser.getMessage(error))
+//                }
+//              }
+//        }
+//    }
+//
+//    fun getLatestCurrency(base:String){
+//        _uiCurrencyListState.value = CurrencyResultListUIState.Loading
+//        viewModelScope.launch(Dispatchers.Default) {
+//            try {
+//                val result = openExchangeRatesCaseImpl.getLatestCurrency("USD")
+////                val listString = ArrayList<String>()
+////                for(i in result.rates){
+////                    listString.add(i.currencyName)
+////                }
+//
+//                for(i in result.rates.entries){
+//                   val currencyName = arrayListCurrencyModel.filter { it.currencyCode == i.key }
+//                    arrayListCurrencyRateModel.add(CurrencyRateModel(currencyName[0].currencyName,i.key,i.value,0.00))
+//                }
+//
+////
+//                viewModelScope.launch(Dispatchers.Main){
+//                    _uiCurrencyListState.value = CurrencyResultListUIState.Loaded(arrayListCurrencyRateModel)
+//                }
+//            } catch (error: Exception) {
+//                viewModelScope.launch(Dispatchers.Main) {
+//                    _uiCurrencyListState.value =
+//                        CurrencyResultListUIState.Error(ExceptionParser.getMessage(error))
+//                }
+//            }
+//        }
+//    }
+//
+//    fun calculate(strNumber:Double){
+//        _uiCurrencyListState.value = CurrencyResultListUIState.Loading
+//        viewModelScope.launch(Dispatchers.Default) {
+//            for (i in arrayListCurrencyRateModel) {
+//                i.currencyResult = i.currencyRate * strNumber
+//            }
+//            viewModelScope.launch(Dispatchers.Main){
+//                _uiCurrencyListState.value = CurrencyResultListUIState.Loaded(arrayListCurrencyRateModel)
+//            }
+//        }
+//    }
+//
+//    fun calculateResult(baseRate:Double, amount:Double):Double{
+//        return baseRate * amount
+//    }
 
 
     sealed class UserListUIState {

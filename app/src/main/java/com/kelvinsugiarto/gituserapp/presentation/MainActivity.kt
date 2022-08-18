@@ -16,7 +16,9 @@ import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -56,16 +58,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var arrayAdapter : DropDownListAdapter
     var arrayList = mutableListOf<String>()
     lateinit var currencyListAdapter: CurrencyResultListAdapter
-
-    val cityList = mutableListOf(
-        "C-Programming", "Data Structure", "Database", "Python"
-    )
-
-    var courseList = arrayOf(
-        "C-Programming", "Data Structure", "Database", "Python",
-        "Java", "Operating System", "Compiler Design", "Android Development"
-    )
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +99,10 @@ class MainActivity : AppCompatActivity() {
     private fun fetchCurrencyList(){
 //        userListViewModel.getCurrencyList()
 //        userListViewModel.getLatestCurrency("USD")
+    }
+
+    private fun doSearch(q:String){
+        userListViewModel.getSearchUserList(q)
     }
 
 
@@ -151,7 +147,7 @@ class MainActivity : AppCompatActivity() {
 
             setSupportActionBar(toolbarMain) //Set toolbar
 //            supportActionBar?.setDisplayShowTitleEnabled(false);
-            supportActionBar?.title = "Currency Converter"
+            supportActionBar?.title = "Github User List"
         }
 
     }
@@ -216,6 +212,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            etUserSearch.doAfterTextChanged {
+                if (!it.isNullOrBlank()) {
+                    doSearch(it.toString())
+                }
+            }
+
 
         }
 
@@ -226,7 +228,7 @@ class MainActivity : AppCompatActivity() {
         binding.etAmount.setSelection(numberText.length)
     }
 
-    fun initObserver(){
+    private fun initObserver(){
 
         authViewModel.loginLiveData.observe(this){
             state -> handleLoginResult(state)
@@ -234,17 +236,18 @@ class MainActivity : AppCompatActivity() {
 
 
         lifecycleScope.launch {
-//            repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                userListViewModel.uiState.collect {
-//                        state ->
-//                    when(state) {
-//                        is UserListViewModel.UserListUIState.Loaded -> {
-//                            onLoaded(state.itemState)
-//                        }
-//                        is UserListViewModel.UserListUIState.Error -> showError(state.message)
-//                        else -> showLoading(true)
-//                    }
-//                }
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userListViewModel.uiState.collect { state ->
+                    when (state) {
+                        is UserListViewModel.UserListUIState.Loaded -> {
+                            onLoaded(state.itemState)
+                        }
+                        is UserListViewModel.UserListUIState.Error -> showError(state.message)
+                        else -> showLoading(true)
+                    }
+                }
+            }
+        }
 
 //                userListViewModel.uiCurrencyState.observe(this@MainActivity){
 //                        state ->
@@ -261,9 +264,9 @@ class MainActivity : AppCompatActivity() {
 
 
 
-            }
+//            }
 
-            lifecycleScope.launch {
+//            lifecycleScope.launch {
 //                userListViewModel.uiCurrencyListState.collect { state ->
 //                    when (state) {
 //                        is UserListViewModel.CurrencyResultListUIState.Loaded -> {
@@ -276,7 +279,7 @@ class MainActivity : AppCompatActivity() {
 //                        else -> showLoading(true)
 //                    }
 //                }
-            }
+//            }
 
     }
 

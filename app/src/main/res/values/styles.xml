@@ -8,4 +8,9 @@
         <item name="android:background">@color/black_overlay</item>
         <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
+
+    <style name="MyTextInputLayout_overlay">
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorPrimary">@color/gray</item>
+    </style>
 </resources>

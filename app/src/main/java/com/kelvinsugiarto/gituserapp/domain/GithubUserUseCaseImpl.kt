@@ -1,5 +1,6 @@
 package com.kelvinsugiarto.gituserapp.domain
 
+import com.kelvinsugiarto.gituserapp.data.model.UserItemsModel
 import com.kelvinsugiarto.gituserapp.data.model.UserModel
 import com.kelvinsugiarto.gituserapp.data.model.UsersListModel
 import com.kelvinsugiarto.gituserapp.domain.usecase.GithubUserUseCase
@@ -14,5 +15,9 @@ class GithubUserUseCaseImpl @Inject constructor(
 
     suspend fun getUser(username:String): UserModel {
         return githubUserUseCase.getUser(username)
+    }
+
+    suspend fun searchUser(query: String):UserItemsModel{
+        return githubUserUseCase.searchUser(query)
     }
 }

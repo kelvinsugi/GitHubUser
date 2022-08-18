@@ -13,8 +13,8 @@ import retrofit2.Retrofit
 @InstallIn(SingletonComponent::class)
 object ApiModule {
 
-//    @Provides
-//    fun providesGithubUserApi(retrofit: Retrofit): GithubUserApi = retrofit.create(GithubUserApi::class.java)
+    @Provides
+    fun providesGithubUserApi(retrofit: Retrofit): GithubUserApi = retrofit.create(GithubUserApi::class.java)
 
     @Provides
     fun providesOpenExchangeRatesAPI(retrofit: Retrofit): OpenExchangeRatesAPI = retrofit.create(OpenExchangeRatesAPI::class.java)

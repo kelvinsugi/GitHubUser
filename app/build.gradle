@@ -25,6 +25,8 @@ android {
             buildConfigField("String", "BASE_URL", "\"https://api.github.com\"")
             buildConfigField "String", "API_KEY", '"d74666b81a4d4ea0957c93758a03cc06"'
             buildConfigField("String", "BASE_URL_AKSELERAN", "\"https://akseleran-recruitment-test.herokuapp.com/\"")
+            buildConfigField("String", "API_KEY_AKSELERAN",'"tkhg564aD45sd4d46wdw99565SdFsdwdwdwQQoP11454You"')
+            buildConfigField("String", "API_KEY_GITHUB",'"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"')
         }
         release {
             minifyEnabled false
@@ -33,6 +35,8 @@ android {
             buildConfigField("String", "BASE_URL_OPEN", "\"https://openexchangerates.org/api/\"")
             buildConfigField("String", "BASE_URL_AKSELERAN", "\"https://akseleran-recruitment-test.herokuapp.com/\"")
             buildConfigField "String", "API_KEY", '"d74666b81a4d4ea0957c93758a03cc06"'
+            buildConfigField("String", "API_KEY_AKSELERAN",'"tkhg564aD45sd4d46wdw99565SdFsdwdwdwQQoP11454You"')
+            buildConfigField("String", "API_KEY_GITHUB",'"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"')
         }
     }
 
